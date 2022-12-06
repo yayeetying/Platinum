@@ -7,8 +7,8 @@ from tile import *
    Each route is a 2D array of Tiles
 '''
 
-#SPAWN_RATE = 0.003
-SPAWN_RATE = 0.1
+SPAWN_RATE = 0.003
+#SPAWN_RATE = 0
 
 class Map():
     def __init__(self, txt_file):
@@ -44,17 +44,15 @@ class Map():
         for row in self.char_map:
             for tile in row:
                 if tile.collision(player.pos_x, player.pos_y):
-                    if tile.char == 'a' or tile.char == 's': # Trees; cannot walk through
+                    if tile.char == '#' or tile.char == '@' or tile.char == '3' or tile.char == '2': # Trees and Water; cannot walk through
                         if player.current_direction == "right":
                             player.update_x(-1 * player.speed)
                         elif player.current_direction == "left":
                             player.update_x(player.speed)
                         elif player.current_direction == "up":
                             player.update_y(player.speed)
-                        else:
+                        elif player.current_direction == 'down':
                             player.update_y(-1 * player.speed)
-                    elif tile.char == '3' or tile.char == '2': # Water; cannot walk through, but can swim through
-                        print('lol')
                     elif (tile.char == '.' or tile.char == ',') and random.random() < SPAWN_RATE:
                         return 1
         return 0

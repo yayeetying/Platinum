@@ -12,7 +12,8 @@ def load_element(path, width, height):
 
 class Tile():
     def __init__(self, char, x, y):
-        self.width, self.height = 80,90
+        self.width, self.height = 80, 90
+        #self.width, self.height = 50,50
         self.x, self.y = x,y
         self.char = char
         self.image_path = self.convert(char)
@@ -47,6 +48,7 @@ class Tile():
 
     # Detect collision based on player's xy cords
     def collision(self, player_x, player_y):
-        if self.x <= player_x and player_x <= self.x + self.width and self.y <= player_y and player_y <= self.y + self.height:
+        #if self.x-self.width <= player_x <= self.x and self.y-self.height <= player_y <= self.y:
+        if self.x-self.width/2 <= player_x <= self.x+self.width/2 and self.y-self.height/2 <= player_y <= self.y+self.height/2:
             return True
         return False

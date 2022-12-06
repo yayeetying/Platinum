@@ -9,7 +9,7 @@ from pokemon import *
 from battle_pokemon import *
 
 '''
-   Remake of the Pokemon Platinum Game
+   Remake of the Pokemon Platinum game
    Make sure user runs while inside the Platinum repository
 '''
 
@@ -20,7 +20,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pokemon Platinum")
 
 # Load player object
-player = Player(100,100)
+player = Player(520,220)
 
 # Load necessary background images
 battle_grass = load_element("images/battle_backgrounds/battle_grass.png", WIDTH, HEIGHT)
@@ -61,8 +61,6 @@ def choose_Pokemon(choice):
     
     NPC_trainers['Barry'].add_Pokemon(opponent_pokemon)
     player.Pokemon.append(starter_pokemon)
-    print(player.Pokemon[0].name)
-    print(NPC_trainers['Barry'].Pokemon[0].name)
 
 def draw_choice():
     # Draw white screen to erase previous drawings
@@ -104,12 +102,12 @@ def map_state(player, moving_sprites):
         player.update_y(-1 * player.speed)
     elif keys_pressed[pygame.K_DOWN]:
         player.update_y(player.speed)
-            
+    
     # Drawing
-    map = draw_map('maps/test.txt')
+    map = draw_map('maps/route201.txt')
     moving_sprites.draw(WIN)
-    state = map.map_collision(player)
     moving_sprites.update()
+    state = map.map_collision(player)
     pygame.display.flip()
 
     return state # Updates GAME_STATE
@@ -144,9 +142,6 @@ def draw_moves(pokemon):
         if num >= 2:
             draw_rectangle('forestgreen', 600 + 400 * (num-2), 650, 300, 100)
             print_text(str(pokemon.moveset[num]), 'honeydew', 750 + 400 * (num-2), 700)
-    
-    mouse = pygame.mouse.get_pos()
-    print(str(mouse[0]) + "," + str(mouse[1]))
 
 # Handles main loop
 def main():
@@ -193,6 +188,25 @@ def main():
                 elif event.key == pygame.K_DOWN:
                     player.sprites = player.down
                     player.current_direction = "down"
+            elif GAME_STATE == 1 and event.type == pygame.MOUSEBUTTONUP: # Battle; Click in battles
+                mouse = pygame.mouse.get_pos()
+                if button_clicked(mouse, 1000, 500, 1300, 600): # Move 1
+                    print('lol')
+                    '''move1 = Move(player.Pokemon[0].moveset[0]) # 'Scratch'
+                    move1.execute_move()'''
+
+                '''
+                def draw_moves(pokemon):
+    draw_rectangle('forestgreen', 650, 350, 600, 100)
+    print_text('What will ' + str(pokemon.name) + ' do?', 'honeydew', 950, 400)
+
+    for num in range(len(pokemon.moveset)):
+        draw_rectangle('forestgreen', 600 + 400 * num, 500, 300, 100)
+        print_text(str(pokemon.moveset[num]), 'honeydew', 750 + 400 * num, 550)
+        if num >= 2:
+            draw_rectangle('forestgreen', 600 + 400 * (num-2), 650, 300, 100)
+            print_text(str(pokemon.moveset[num]), 'honeydew', 750 + 400 * (num-2), 700)
+            '''
         
         if GAME_STATE == -1: # Choose Pokemon State
             draw_choice()
@@ -210,7 +224,7 @@ def main():
 
 # Given mouse cords, top-left cords and bottom-right cords of a rectangle, detect clicking
 def button_clicked(mouse, top_x, top_y, bottom_x, bottom_y):
-    return mouse[0] >= top_x and mouse[0] <= bottom_x and mouse[1] >= top_y and mouse[1] <= bottom_y
+    return top_x <= mouse[0] <= bottom_x and top_y <= mouse[1] <= bottom_y
 
 if __name__ == "__main__":
     main()

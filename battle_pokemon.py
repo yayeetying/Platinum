@@ -15,8 +15,12 @@ class Battle_Pokemon(Pokemon):
         self.image = pygame.transform.scale(self.image, (width, height))
         self.x = x
         self.y = y
+        self.current_stats = self.stats
+        #if stats_arr == []:
+            #self.current_stats = self.stats
+        #else:
+            #self.current_stats = stats_arr
         '''
-        self.current_stats = 
         self.is_dead =
         '''
     
