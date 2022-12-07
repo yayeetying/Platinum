@@ -146,7 +146,6 @@ def battle_state(surface, c_pokemon, o_pokemon):
                     opponent_turn = True
 
         if opponent_turn == True:
-            print("True")
             if random.random() < 0.5:
                 num = 0
             else:
@@ -155,8 +154,8 @@ def battle_state(surface, c_pokemon, o_pokemon):
             move1 = create_move(move_name)
             move1.execute_move(o_pokemon, c_pokemon)
             #move1.animate_move(WIN, 300, 550) # Animate onto the player's Pokemon
-            print(current_pokemon.current_stats)
-            print(opponent_pokemon.current_stats)
+            print("Player: " + str(current_pokemon.current_stats))
+            print("Opponent: " + str(opponent_pokemon.current_stats))
             opponent_turn = False
 
         draw_battle()
