@@ -26,3 +26,6 @@ class Battle_Pokemon(Pokemon):
     
     def display(self, surface):
         surface.blit(self.image, (self.x,self.y))
+
+    def lose_hp(self, value):
+        self.current_stats['HP'] = self.current_stats['HP'] - value

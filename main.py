@@ -7,6 +7,7 @@ from map import *
 from pokemon import *
 from pokemon import *
 from battle_pokemon import *
+from move import *
 
 '''
    Remake of the Pokemon Platinum game
@@ -20,7 +21,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pokemon Platinum")
 
 # Load player object
-player = Player(520,220)
+player = Player(400,220)
 
 # Load necessary background images
 battle_grass = load_element("images/battle_backgrounds/battle_grass.png", WIDTH, HEIGHT)
@@ -33,6 +34,10 @@ global GAME_STATE
 BATTLE_PLAYER_X, BATTLE_PLAYER_Y = 150, 375
 BATTLE_OPPONENT_X, BATTLE_OPPONENT_Y = 1050, 125
 BATTLE_PLAYER_SIZE = 350
+
+# For battling state
+global current_pokemon 
+global opponent_pokemon
 
 # Defines FPS game runs on
 FPS = 60
@@ -50,14 +55,14 @@ def print_text(text, color, x, y):
 
 def choose_Pokemon(choice):
     if choice == 'Chimchar':
-        starter_pokemon = Pokemon('Chimchar', ['Fire'], {'HP': 44, 'Attack': 58, 'Defense': 44, 'SpAtk': 58, 'SpDef': 44, 'Speed': 61}, ['Scratch', 'Leer'], 'images/pokemon/chimchar.png', 5)
-        opponent_pokemon = Pokemon('Piplup', ['Water'], {'HP': 53, 'Attack': 51, 'Defense': 53, 'SpAtk': 61, 'SpDef': 56, 'Speed': 40}, ['Scratch', 'Leer'], 'images/pokemon/piplup.png', 5)
+        starter_pokemon = Pokemon('Chimchar', ['Fire'], {'HP': 22, 'Attack': 58, 'Defense': 44, 'SpAtk': 58, 'SpDef': 44, 'Speed': 61}, ['Scratch', 'Leer'], 'images/pokemon/chimchar.png', 5)
+        opponent_pokemon = Pokemon('Piplup', ['Water'], {'HP': 26, 'Attack': 51, 'Defense': 53, 'SpAtk': 61, 'SpDef': 56, 'Speed': 40}, ['Pound', 'Growl'], 'images/pokemon/piplup.png', 5)
     elif choice == 'Piplup':
-        starter_pokemon = Pokemon('Piplup', ['Water'], {'HP': 53, 'Attack': 51, 'Defense': 53, 'SpAtk': 61, 'SpDef': 56, 'Speed': 40}, ['Scratch', 'Leer', 'Water Gun', 'Whirlpool'], 'images/pokemon/piplup.png', 5)
-        opponent_pokemon = Pokemon('Turtwig', ['Grass'], {'HP': 55, 'Attack': 68, 'Defense': 64, 'SpAtk': 45, 'SpDef': 55, 'Speed': 31}, ['Scratch', 'Leer'], 'images/pokemon/turtwig.png', 5)
+        starter_pokemon = Pokemon('Piplup', ['Water'], {'HP': 26, 'Attack': 51, 'Defense': 53, 'SpAtk': 61, 'SpDef': 56, 'Speed': 40}, ['Pound', 'Growl'], 'images/pokemon/piplup.png', 5)
+        opponent_pokemon = Pokemon('Turtwig', ['Grass'], {'HP': 28, 'Attack': 68, 'Defense': 64, 'SpAtk': 45, 'SpDef': 55, 'Speed': 31}, ['Tackle', 'Leer'], 'images/pokemon/turtwig.png', 5)
     else:
-        starter_pokemon = Pokemon('Turtwig', ['Grass'], {'HP': 55, 'Attack': 68, 'Defense': 64, 'SpAtk': 45, 'SpDef': 55, 'Speed': 31}, ['Scratch', 'Leer'], 'images/pokemon/turtwig.png', 5)
-        opponent_pokemon = Pokemon('Chimchar', ['Fire'], {'HP': 44, 'Attack': 58, 'Defense': 44, 'SpAtk': 58, 'SpDef': 44, 'Speed': 61}, ['Scratch', 'Leer'], 'images/pokemon/chimchar.png', 5)
+        starter_pokemon = Pokemon('Turtwig', ['Grass'], {'HP': 28, 'Attack': 68, 'Defense': 64, 'SpAtk': 45, 'SpDef': 55, 'Speed': 31}, ['Tackle', 'Leer'], 'images/pokemon/turtwig.png', 5)
+        opponent_pokemon = Pokemon('Chimchar', ['Fire'], {'HP': 22, 'Attack': 58, 'Defense': 44, 'SpAtk': 58, 'SpDef': 44, 'Speed': 61}, ['Scratch', 'Leer'], 'images/pokemon/chimchar.png', 5)
     
     NPC_trainers['Barry'].add_Pokemon(opponent_pokemon)
     player.Pokemon.append(starter_pokemon)
@@ -104,7 +109,7 @@ def map_state(player, moving_sprites):
         player.update_y(player.speed)
     
     # Drawing
-    map = draw_map('maps/route201.txt')
+    map = draw_map('maps/test.txt')
     moving_sprites.draw(WIN)
     moving_sprites.update()
     state = map.map_collision(player)
@@ -117,15 +122,48 @@ def draw_battle():
     WIN.blit(battle_grass, (0,0))
 
 # Draw battle background and have player interact with it
-def battle_state(surface, player_pokemon, opponent_pokemon):
-    #while True:
-    draw_battle()
-    player_pokemon.display(surface)
-    opponent_pokemon.display(surface)
-    draw_stats(player_pokemon, BATTLE_PLAYER_X+25, BATTLE_PLAYER_Y-100)
-    draw_stats(opponent_pokemon, BATTLE_OPPONENT_X-45, BATTLE_OPPONENT_Y-100)
-    draw_moves(player_pokemon)
-    pygame.display.flip()
+#def battle_state(surface, player_pokemon, opponent_pokemon):
+def battle_state(surface, c_pokemon, o_pokemon):
+    opponent_turn = False
+    while c_pokemon.current_stats['HP'] > 0 and o_pokemon.current_stats['HP'] > 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.MOUSEBUTTONUP: # Battle; Click in battles
+                mouse = pygame.mouse.get_pos()
+                if button_clicked(mouse, 600, 500, 900, 600): # Move 1
+                    move_name = player.Pokemon[0].moveset[0]
+                    move1 = create_move(move_name)
+                    move1.execute_move(c_pokemon, o_pokemon)
+                    opponent_turn = True
+                elif button_clicked(mouse, 1000, 500, 1300, 600): # Move 2
+                    move_name = player.Pokemon[0].moveset[1]
+                    move2 = create_move(move_name)
+                    move2.execute_move(c_pokemon, o_pokemon)
+                    opponent_turn = True
+
+        if opponent_turn == True:
+            print("True")
+            if random.random() < 0.5:
+                num = 0
+            else:
+                num = 1
+            move_name = NPC_trainers['Barry'].Pokemon[0].moveset[num]
+            move1 = create_move(move_name)
+            move1.execute_move(o_pokemon, c_pokemon)
+            print(current_pokemon.current_stats)
+            print(opponent_pokemon.current_stats)
+            opponent_turn = False
+
+        draw_battle()
+        c_pokemon.display(surface)
+        o_pokemon.display(surface)
+        draw_stats(c_pokemon, BATTLE_PLAYER_X+25, BATTLE_PLAYER_Y-100)
+        draw_stats(o_pokemon, BATTLE_OPPONENT_X-45, BATTLE_OPPONENT_Y-100)
+        draw_moves(c_pokemon)
+        pygame.display.flip()
+    
+    return True # Go back to the Map
 
 def draw_stats(pokemon, x, y):
     draw_rectangle('palegreen', x, y, 300, 100)
@@ -154,6 +192,10 @@ def main():
     # Create moving sprites and group them together
     moving_sprites = pygame.sprite.Group()
     moving_sprites.add(player)
+
+    # For battling state
+    global current_pokemon 
+    global opponent_pokemon
 
     GAME_STATE = -1
 
@@ -188,25 +230,6 @@ def main():
                 elif event.key == pygame.K_DOWN:
                     player.sprites = player.down
                     player.current_direction = "down"
-            elif GAME_STATE == 1 and event.type == pygame.MOUSEBUTTONUP: # Battle; Click in battles
-                mouse = pygame.mouse.get_pos()
-                if button_clicked(mouse, 1000, 500, 1300, 600): # Move 1
-                    print('lol')
-                    '''move1 = Move(player.Pokemon[0].moveset[0]) # 'Scratch'
-                    move1.execute_move()'''
-
-                '''
-                def draw_moves(pokemon):
-    draw_rectangle('forestgreen', 650, 350, 600, 100)
-    print_text('What will ' + str(pokemon.name) + ' do?', 'honeydew', 950, 400)
-
-    for num in range(len(pokemon.moveset)):
-        draw_rectangle('forestgreen', 600 + 400 * num, 500, 300, 100)
-        print_text(str(pokemon.moveset[num]), 'honeydew', 750 + 400 * num, 550)
-        if num >= 2:
-            draw_rectangle('forestgreen', 600 + 400 * (num-2), 650, 300, 100)
-            print_text(str(pokemon.moveset[num]), 'honeydew', 750 + 400 * (num-2), 700)
-            '''
         
         if GAME_STATE == -1: # Choose Pokemon State
             draw_choice()
@@ -218,13 +241,40 @@ def main():
 
             opponent = NPC_trainers['Barry'].Pokemon[0]
             opponent_pokemon = Battle_Pokemon(opponent, BATTLE_OPPONENT_X, BATTLE_OPPONENT_Y)
-            battle_state(WIN, current_pokemon, opponent_pokemon)
+            
+            quit = battle_state(WIN, current_pokemon, opponent_pokemon)
+            if quit == False:
+                run = False
+            else: # True
+                '''
+                # Reset stats after battle to regular stats
+                current_pokemon.current_stats = current_pokemon.stats
+                opponent_pokemon.current_stats = opponent_pokemon.stats
+                '''
+                GAME_STATE = 0 # Return to Map State
         
     pygame.quit()
 
 # Given mouse cords, top-left cords and bottom-right cords of a rectangle, detect clicking
 def button_clicked(mouse, top_x, top_y, bottom_x, bottom_y):
     return top_x <= mouse[0] <= bottom_x and top_y <= mouse[1] <= bottom_y
+
+# Given name of move, create Move object
+def create_move(name):
+    match name:
+        case 'Scratch':
+            return Move(name, 'Attack', 40, 'Attack', 'Normal')
+        case 'Tackle':
+            return Move(name, 'Attack', 45, 'Attack', 'Normal')
+        case 'Pound':
+            return Move(name, 'Attack', 35, 'Attack', 'Normal')
+        case 'Leer':
+            return Move(name, 'Debuff', 5, 'Defense', 'Normal')
+        case 'Growl':
+            return Move(name, 'Debuff', 5, 'Attack', 'Normal')
+
+    return None # Need to make new move
+
 
 if __name__ == "__main__":
     main()

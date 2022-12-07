@@ -55,5 +55,7 @@ class Map():
                             player.update_y(-1 * player.speed)
                     elif (tile.char == '.' or tile.char == ',') and random.random() < SPAWN_RATE:
                         return 1
+                    elif tile.char == 'a' or tile.char == 's':
+                        return 0
         return 0
     

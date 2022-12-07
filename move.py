@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 
 '''
    Move class
@@ -10,6 +10,10 @@ import pygame, sys
       self.move_type = 'Normal'
 
 '''
+
+def calculate_damage(poke_level, move_power, a_stat, d_stat):
+    factor = random.uniform(0.85, 1)
+    return int((((2 * poke_level / 5 + 2) * move_power * a_stat/d_stat) / 50 + 2) * factor)
 
 class Move():
     def __init__(self, move_name, type, attack_power, involved_stat, move_type):
@@ -23,11 +27,15 @@ class Move():
     # 3 Types of Moves: Attacking, Buffing (self), Debuffing (opponent)
     def execute_move(self, player_pokemon, opponent_pokemon):
         if self.type == 'Attack':
-            if self.involved_stat == 'Attack':
-                
-            else: # Involved stat is SpAtk
-
+            if self.involved_stat == 'Attack': 
+                damage = calculate_damage(player_pokemon.level, self.attack_power, player_pokemon.current_stats['Attack'], opponent_pokemon.current_stats['Defense'])
+                opponent_pokemon.lose_hp(damage)
+            else: #'SpAtk'
+                damage = calculate_damage(player_pokemon.level, self.attack_power, player_pokemon.current_stats['SpAtk'], opponent_pokemon.current_stats['SpDef'])
+                opponent_pokemon.lose_hp(damage)
         elif self.type == 'Buff':
+            print('lol') # No Pokemon have Buff moves yet
         else: # Debuff
+            opponent_pokemon.current_stats[self.involved_stat] = opponent_pokemon.current_stats[self.involved_stat] - self.attack_power
 
 
