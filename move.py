@@ -24,7 +24,9 @@ class Move():
         self.involved_stat = involved_stat
         self.move_type = move_type
 
+        '''
         # For Animation
+        self.time = 0
         if self.type == 'Attack':
             self.image = 'images/move_effects/scratch.png'
         elif self.type == 'Buff':
@@ -32,6 +34,7 @@ class Move():
             self.image = 'images/move_effects/debuff.png'
         else: #Debuff
             self.image = 'images/move_effects/debuff.png'
+        '''
 
     # 3 Types of Moves: Attacking, Buffing (self), Debuffing (opponent)
     def execute_move(self, player_pokemon, opponent_pokemon):
@@ -46,10 +49,11 @@ class Move():
             print('lol') # No Pokemon have Buff moves yet
         else: # Debuff
             opponent_pokemon.current_stats[self.involved_stat] = opponent_pokemon.current_stats[self.involved_stat] - self.attack_power
-
+    
+    '''
     def animate_move(self, surface, x, y):
         img = pygame.image.load(self.image)
         img = pygame.transform.scale(img, (100, 100))
         surface.blit(img, (x,y))
-        pygame.time.delay(2000)
+    '''
 

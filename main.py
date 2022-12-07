@@ -136,13 +136,13 @@ def battle_state(surface, c_pokemon, o_pokemon):
                     move_name = player.Pokemon[0].moveset[0]
                     move1 = create_move(move_name)
                     move1.execute_move(c_pokemon, o_pokemon)
-                    move1.animate_move(WIN, 1150, 250) # Animate onto the opponent
+                    #move1.animate_move(WIN, 1150, 250) # Animate onto the opponent
                     opponent_turn = True
                 elif button_clicked(mouse, 1000, 500, 1300, 600): # Move 2
                     move_name = player.Pokemon[0].moveset[1]
                     move2 = create_move(move_name)
                     move2.execute_move(c_pokemon, o_pokemon)
-                    move1.animate_move(WIN, 1150, 250)
+                    #move1.animate_move(WIN, 1150, 250)
                     opponent_turn = True
 
         if opponent_turn == True:
@@ -154,7 +154,7 @@ def battle_state(surface, c_pokemon, o_pokemon):
             move_name = NPC_trainers['Barry'].Pokemon[0].moveset[num]
             move1 = create_move(move_name)
             move1.execute_move(o_pokemon, c_pokemon)
-            move1.animate_move(WIN, 300, 550) # Animate onto the player's Pokemon
+            #move1.animate_move(WIN, 300, 550) # Animate onto the player's Pokemon
             print(current_pokemon.current_stats)
             print(opponent_pokemon.current_stats)
             opponent_turn = False
@@ -278,7 +278,6 @@ def create_move(name):
             return Move(name, 'Debuff', 5, 'Attack', 'Normal')
 
     return None # Need to make new move
-
 
 if __name__ == "__main__":
     main()
