@@ -42,6 +42,7 @@ global opponent_pokemon
 # Defines FPS game runs on
 FPS = 60
 
+# For background of a button
 def draw_rectangle(color, x, y, width, height):
     pygame.draw.rect(WIN, color, pygame.Rect(x, y, width, height))
 
