@@ -3,6 +3,9 @@
 ## Roles
 - Yaying Liang Li: Frontend, Backend
 
+## Demo
+Youtube Link: Bokemon Blatinum[https://www.youtube.com/watch?v=4aOc4HC5nK8&ab_channel=YayaLiangLi]
+
 ## Description
 &nbsp; Wanting to play a Pokemon adventure game but too broke to buy a DS? Thinking that the newer Pokemon games have lost their classic charm? Thinking that Sinnoh is the best region? (The _only_ correct opinion) <br>
     
